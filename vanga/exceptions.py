@@ -1,0 +1,3 @@
+
+class VangaError(Exception):
+    pass
