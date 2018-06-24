@@ -1,5 +1,3 @@
-from abc import abstractmethod
-
 from vanga.abc import FieldABC
 from vanga.exceptions import VangaError
 
@@ -45,3 +43,21 @@ class Nested(Field):
             raise VangaError(f'incorrect format for {key} value')
         except KeyError:
             raise VangaError(f'missing "{key}" value')
+
+
+class List(Field):
+    def __init__(self, schema):
+        self._schema = schema
+        super(List, self).__init__()
+
+    def validate(self, key, data):
+        try:
+            return [self._schema.validate(member)
+                    for member in data[key]]
+        except VangaError:
+            raise VangaError(f'incorrect format for {key} value')
+        except KeyError:
+            raise VangaError(f'missing "{key}" value')
+        except TypeError:
+            raise VangaError(f'"{key}" value is not iterable')
+
