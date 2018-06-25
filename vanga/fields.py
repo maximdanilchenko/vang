@@ -1,22 +1,34 @@
 from vanga.abc import FieldABC
 from vanga.exceptions import VangaError
+from vanga.extras import empty
 
 
 class Field(FieldABC):
-    def __init__(self):
-        """ TODO: Implement arguments like "required", "allow_none" etc """
-        pass
+    def __init__(self, *,
+                 default=empty,
+                 required=True,
+                 allow_none=False):
+        self.default = default
+        self.required = required
+        self.allow_none = allow_none
 
     def _func(self, value):
         return value
 
     def validate(self, key, data):
         try:
-            return self._func(data[key])
-        except ValueError:
-            raise VangaError(f'incorrect format for {key} value')
+            value = data[key]
+            if value is None and self.allow_none:
+                return None
+            return self._func(value)
+        except (ValueError, TypeError, VangaError):
+            raise VangaError(f'Incorrect format for {key} value')
         except KeyError:
-            raise VangaError(f'missing "{key}" value')
+            if self.default is empty:
+                if self.required is True:
+                    raise VangaError(f'Missing "{key}" value')
+                return empty
+            return self.default
 
 
 class Integer(Field):
@@ -32,32 +44,19 @@ class Boolean(Field):
 
 
 class Nested(Field):
-    def __init__(self, schema):
+    def __init__(self, schema, **kwargs):
         self._schema = schema
-        super(Nested, self).__init__()
+        super(Nested, self).__init__(**kwargs)
 
-    def validate(self, key, data):
-        try:
-            return self._schema.validate(data[key])
-        except VangaError:
-            raise VangaError(f'incorrect format for {key} value')
-        except KeyError:
-            raise VangaError(f'missing "{key}" value')
+    def _func(self, value):
+        return self._schema.validate(value)
 
 
 class List(Field):
-    def __init__(self, schema):
+    def __init__(self, schema, **kwargs):
         self._schema = schema
-        super(List, self).__init__()
+        super(List, self).__init__(**kwargs)
 
-    def validate(self, key, data):
-        try:
-            return [self._schema.validate(member)
-                    for member in data[key]]
-        except VangaError:
-            raise VangaError(f'incorrect format for {key} value')
-        except KeyError:
-            raise VangaError(f'missing "{key}" value')
-        except TypeError:
-            raise VangaError(f'"{key}" value is not iterable')
-
+    def _func(self, value):
+        return [self._schema.validate(member)
+                for member in value]
