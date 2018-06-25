@@ -22,14 +22,14 @@ Its aims are __simplicity__ and __speed__.
 - [ ] Fields classes:
   - [x] Base ```Field``` class with ```validate``` method;
   - [x] ```Integer``` class;
-  - [ ] ```Float``` class;
+  - [x] ```Float``` class;
   - [ ] ```Decimal``` class;
   - [x] ```String``` class;
   - [x] ```Boolean``` class;
   - [ ] ```Datetime```/```Date```/```Time``` classes;
   - [x] ```List``` class;
   - [x] ```Nested``` class;
-  - [ ] ```Raw``` class.
+  - [x] ```Raw``` class.
 - [ ] Fields params:
   - [x] ```default``` param;
   - [x] ```required``` param;

@@ -4,6 +4,7 @@ from vanga.extras import empty
 
 
 class Field(FieldABC):
+    """ Base field class """
     def __init__(self, *,
                  default=empty,
                  required=True,
@@ -32,18 +33,27 @@ class Field(FieldABC):
 
 
 class Integer(Field):
+    """ Integer field """
     _func = int
 
 
+class Float(Field):
+    """ Float field """
+    _func = float
+
+
 class String(Field):
+    """ String field """
     _func = str
 
 
 class Boolean(Field):
+    """ Boolean field """
     _func = bool
 
 
 class Nested(Field):
+    """ Another field """
     def __init__(self, schema, **kwargs):
         self._schema = schema
         super(Nested, self).__init__(**kwargs)
@@ -53,10 +63,19 @@ class Nested(Field):
 
 
 class List(Field):
-    def __init__(self, schema, **kwargs):
+    """ List of fields """
+    def __init__(self, schema, allow_empty=True, **kwargs):
         self._schema = schema
+        self.allow_empty = allow_empty
         super(List, self).__init__(**kwargs)
 
     def _func(self, value):
-        return [self._schema.validate(member)
-                for member in value]
+        result = [self._schema.validate(member)
+                  for member in value]
+        if not result and not self.allow_empty:
+            raise VangaError(f'Should not be empty')
+        return result
+
+
+class Raw(Field):
+    """ Any object """
