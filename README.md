@@ -49,6 +49,7 @@ Its aims are __simplicity__ and __speed__.
   - [ ] Benchmarks and speed up schema and fields ```validate``` 
 method with cython if needed and where needed.
 - [ ] Json loader integrated with validator
+  
   _In progress_...
 
 ### Short example:
