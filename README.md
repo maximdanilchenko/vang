@@ -43,6 +43,9 @@ Its aims are __simplicity__ and __speed__.
   - [ ] ```NoneOf``` function;
   - [ ] ```Equal``` function;
   - [ ] ```Regexp``` function.
+- [ ] Flexible errors configuration:
+ - [ ] Configuring error messages for each validate class/function;
+ - [ ] Custom exceptions support.
 - [ ] Annotation types support:
   - [ ] Mapping annotations to fields classes.
 - [ ] Improves:
