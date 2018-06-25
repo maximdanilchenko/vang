@@ -15,49 +15,43 @@ Its aims are __simplicity__ and __speed__.
 - Integrated json loader for speed up.
 
 ### Current developing progress:
-#### Schemas:
-- [x] Base class for schema building;
-- [x] ```validate``` method;
-- [ ] ```exclude``` param.
-
-#### Fields classes:
-- [x] Base ```Field``` class with ```validate``` method;
-- [x] ```Integer``` class;
-- [ ] ```Float``` class;
-- [ ] ```Decimal``` class;
-- [x] ```String``` class;
-- [x] ```Boolean``` class;
-- [ ] ```Datetime```/```Date```/```Time``` classes;
-- [x] ```List``` class;
-- [x] ```Nested``` class;
-- [ ] ```Raw``` class.
-
-#### Fields params:
-- [x] ```default``` param;
-- [x] ```required``` param;
-- [x] ```allow_none``` param;
-- [ ] ```error_msg``` param;
-- [ ] ```validators``` param.
-
-#### Standard validation functions:
-- [ ] ```Range``` function;
-- [ ] ```Length``` function;
-- [ ] ```OneOf``` function;
-- [ ] ```NoneOf``` function;
-- [ ] ```Equal``` function;
-- [ ] ```Regexp``` function.
-
-#### Annotation types support:
-- [ ] Mapping annotations to fields classes.
-
-#### Improves:
-- [ ] Benchmarks and speed up schema and fields ```validate``` 
+- [ ] Schemas:
+  - [x] Base class for schema building;
+  - [x] ```validate``` method;
+  - [ ] ```exclude``` param.
+- [ ] Fields classes:
+  - [x] Base ```Field``` class with ```validate``` method;
+  - [x] ```Integer``` class;
+  - [ ] ```Float``` class;
+  - [ ] ```Decimal``` class;
+  - [x] ```String``` class;
+  - [x] ```Boolean``` class;
+  - [ ] ```Datetime```/```Date```/```Time``` classes;
+  - [x] ```List``` class;
+  - [x] ```Nested``` class;
+  - [ ] ```Raw``` class.
+- [ ] Fields params:
+  - [x] ```default``` param;
+  - [x] ```required``` param;
+  - [x] ```allow_none``` param;
+  - [ ] ```error_msg``` param;
+  - [ ] ```validators``` param.
+- [ ] Standard validation functions:
+  - [ ] ```Range``` function;
+  - [ ] ```Length``` function;
+  - [ ] ```OneOf``` function;
+  - [ ] ```NoneOf``` function;
+  - [ ] ```Equal``` function;
+  - [ ] ```Regexp``` function.
+- [ ] Annotation types support:
+  - [ ] Mapping annotations to fields classes.
+- [ ] Improves:
+  - [ ] Benchmarks and speed up schema and fields ```validate``` 
 method with cython if needed and where needed.
+- [ ] Json loader integrated with validator
+  _In progress_...
 
-#### Json loader integrated with validator
-_In progress_...
-
-### Example:
+### Short example:
 ```python
 from vanga import fields, Schema
 
