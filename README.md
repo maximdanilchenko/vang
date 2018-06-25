@@ -16,26 +16,36 @@ Its aims are __simplicity__ and __speed__.
 
 ### Current developing progress:
 #### Schemas:
-- [x] Schema base class for schema building ;
-- [x] Schema ```validate``` method;
+- [x] Base class for schema building;
+- [x] ```validate``` method;
+- [ ] ```exclude``` param.
 
 #### Fields classes:
-- [x] Integer;
-- [ ] Float;
-- [ ] Decimal;
-- [x] String;
-- [x] Boolean;
-- [ ] Datetime/Date/Time;
-- [x] List;
-- [x] Nested;
-- [ ] Raw.
+- [x] Base ```Field``` class with ```validate``` method;
+- [x] ```Integer``` class;
+- [ ] ```Float``` class;
+- [ ] ```Decimal``` class;
+- [x] ```String``` class;
+- [x] ```Boolean``` class;
+- [ ] ```Datetime```/```Date```/```Time``` classes;
+- [x] ```List``` class;
+- [x] ```Nested``` class;
+- [ ] ```Raw``` class.
 
 #### Fields params:
-- [x] default param;
-- [x] required param;
-- [x] allow_none param;
-- [ ] error_msg param;
-- [ ] validators param.
+- [x] ```default``` param;
+- [x] ```required``` param;
+- [x] ```allow_none``` param;
+- [ ] ```error_msg``` param;
+- [ ] ```validators``` param.
+
+#### Standard validation functions:
+- [ ] ```Range``` function;
+- [ ] ```Length``` function;
+- [ ] ```OneOf``` function;
+- [ ] ```NoneOf``` function;
+- [ ] ```Equal``` function;
+- [ ] ```Regexp``` function.
 
 #### Annotation types support:
 - [ ] Mapping annotations to fields classes.
@@ -72,7 +82,7 @@ class User(Schema):
 
 
 user_schema = User()
-validated = user_schema.validate({
+validated_user = user_schema.validate({
     'name': 'Bob',
     'age': None,
     'cars': [{'name': 'Ford Focus', 'new': True},
