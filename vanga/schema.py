@@ -14,6 +14,12 @@ class SchemaMeta(type):
 
 class Schema(metaclass=SchemaMeta):
 
+    def __init__(self, exclude=(), only=()):
+        if exclude:
+            self._fields = {k: v for k, v in self._fields if k not in exclude}
+        if only:
+            self._fields = {k: v for k, v in self._fields if k in only}
+
     def validate(self, data):
         result = {}
         for k, v in self._fields.items():
