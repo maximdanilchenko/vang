@@ -3,13 +3,19 @@ from vanga.exceptions import VangaError
 from vanga.extras import empty
 
 
+SELF_NESTED = "self"
+
+
 class Field(FieldABC):
     """ Base field class """
 
-    def __init__(self, *, default=empty, required=True, allow_none=False, **_):
+    def __init__(
+        self, *, default=empty, required=True, allow_none=False, validators=(), **_
+    ):
         self.default = default
         self.required = required
         self.allow_none = allow_none
+        self.validators = validators
         super(Field, self).__init__()
 
     def _func(self, value):
@@ -24,13 +30,16 @@ class Field(FieldABC):
             value = data[key]
             if value is None and self.allow_none:
                 return None
-            return self._func(value)
+            value = self._func(value)
+            for validator in self.validators:
+                validator(value)
+            return value
         except (ValueError, TypeError, VangaError):
-            raise VangaError(f'Incorrect format for "{key}" value')
+            raise VangaError(f"Incorrect format for '{key}' value")
         except KeyError:
             if self.default is empty:
                 if self.required is True:
-                    raise VangaError(f'Missing "{key}" value')
+                    raise VangaError(f"Missing '{key}' value")
                 return empty
             return self.default
 
@@ -68,7 +77,7 @@ class Nested(Field):
         super(Nested, self).__init__(**kwargs)
 
     def _init(self):
-        if self._schema == "self":
+        if self._schema == SELF_NESTED:
             self._schema = self.parent.__class__(**self._kwargs)
 
     def _func(self, value):
@@ -85,7 +94,7 @@ class List(Nested):
     def _func(self, value):
         result = [self._schema.validate(member) for member in value]
         if not result and not self.allow_empty:
-            raise VangaError(f"Should not be empty")
+            raise VangaError("Should not be empty")
         return result
 
 

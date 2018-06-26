@@ -1,6 +1,7 @@
 # Vanga
 
-![status](https://img.shields.io/badge/status-developing-red.svg)
+![Status: developing](https://img.shields.io/badge/status-developing-red.svg) 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 Vanga (from "vanguard") - is validating library. 
 Its API is very like ```marshmallow```'s, 
@@ -23,15 +24,15 @@ Its aims are __simplicity__ and __speed__.
   - [x] Base ```Field``` class with ```validate``` method;
   - [x] ```Integer``` class;
   - [x] ```Float``` class;
-  - [ ] ```Decimal``` class;
   - [x] ```String``` class;
   - [x] ```Boolean``` class;
-  - [ ] ```Datetime```/```Date```/```Time``` classes;
   - [x] ```List``` class;
   - [x] ```"self"``` param for ```List``` class;
   - [x] ```Nested``` class;
   - [x] ```"self"``` param for ```Nested``` class;
   - [x] ```Raw``` class.
+  - [ ] ```Datetime```/```Date```/```Time``` classes;
+  - [ ] ```Decimal``` class;
 - [ ] Fields params:
   - [x] ```default``` param;
   - [x] ```required``` param;
@@ -43,12 +44,12 @@ Its aims are __simplicity__ and __speed__.
   - [ ] ```before_validation``` decorator;
   - [ ] ```after_validation``` decorator.
 - [ ] Standard validation functions:
-  - [ ] ```Range``` function;
-  - [ ] ```Length``` function;
-  - [ ] ```OneOf``` function;
-  - [ ] ```NoneOf``` function;
-  - [ ] ```Equal``` function;
-  - [ ] ```Regexp``` function.
+  - [x] ```Range``` function;
+  - [x] ```Length``` function;
+  - [x] ```OneOf``` function;
+  - [x] ```NoneOf``` function;
+  - [x] ```Equal``` function;
+  - [x] ```Regexp``` function.
 - [ ] Flexible errors configuration:
   - [ ] Configuring error messages for each validate class/function;
   - [ ] Custom exceptions support.
@@ -66,7 +67,7 @@ method with cython if needed and where needed.
 ```python
 import pprint
 
-from vanga import fields, Schema
+from vanga import fields, Schema, validators
 
 
 class Address(Schema):
@@ -78,7 +79,7 @@ class Address(Schema):
 class Car(Schema):
     name = fields.String()
     new = fields.Boolean(required=False)
-    number = fields.Integer(default=None)
+    number = fields.Integer(default=None, validators=[validators.Range(1, 999)])
 
 
 class User(Schema):
