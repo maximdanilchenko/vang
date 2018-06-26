@@ -72,7 +72,7 @@ from vanga import fields, Schema
 class Address(Schema):
     street = fields.String()
     house = fields.Integer()
-    city = fields.String(default='New York')
+    city = fields.String(default="New York")
 
 
 class Car(Schema):
@@ -86,23 +86,24 @@ class User(Schema):
     age = fields.Integer(allow_none=True)
     address = fields.Nested(Address())
     cars = fields.List(Car())
-    brother = fields.Nested('self', 
-                            required=False,
-                            only=('name', 'age'))
-    friends = fields.List('self', only=('name',))
+    brother = fields.Nested("self", required=False, only=("name", "age"))
+    friends = fields.List("self", only=("name",))
 
 
 user_schema = User()
-validated = user_schema.validate({
-    'name': 'Bob',
-    'age': None,
-    'cars': [{'name': 'Ford Focus', 'new': True},
-             {'name': 'Toyota Supra', 'number': 432}],
-    'address': {'street': 'High',
-                'house': 43},
-    'brother': {'name': 'Alex', 'age': 24},
-    'friends': [{'name': 'Max'}, {'name': 'David'}]
-})
+validated = user_schema.validate(
+    {
+        "name": "Bob",
+        "age": None,
+        "cars": [
+            {"name": "Ford Focus", "new": True},
+            {"name": "Toyota Supra", "number": 432},
+        ],
+        "address": {"street": "High", "house": 43},
+        "brother": {"name": "Alex", "age": 24},
+        "friends": [{"name": "Max"}, {"name": "David"}],
+    }
+)
 pprint.pprint(validated)
 """Output:
 {'address': {'city': 'New York', 'house': 43, 'street': 'High'},
