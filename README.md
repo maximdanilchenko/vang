@@ -43,7 +43,7 @@ Its aims are __simplicity__ and __speed__.
 - [ ] Decorators:
   - [ ] ```before_validation``` decorator;
   - [ ] ```after_validation``` decorator.
-- [ ] Standard validation functions:
+- [x] Standard validation functions:
   - [x] ```Range``` function;
   - [x] ```Length``` function;
   - [x] ```OneOf``` function;
