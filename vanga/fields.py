@@ -8,13 +8,19 @@ class Field(FieldABC):
     def __init__(self, *,
                  default=empty,
                  required=True,
-                 allow_none=False):
+                 allow_none=False,
+                 **_):
         self.default = default
         self.required = required
         self.allow_none = allow_none
+        super(Field, self).__init__()
 
     def _func(self, value):
         return value
+
+    def _init(self):
+        """ Staff for schema init """
+        pass
 
     def validate(self, key, data):
         try:
@@ -23,7 +29,7 @@ class Field(FieldABC):
                 return None
             return self._func(value)
         except (ValueError, TypeError, VangaError):
-            raise VangaError(f'Incorrect format for {key} value')
+            raise VangaError(f'Incorrect format for "{key}" value')
         except KeyError:
             if self.default is empty:
                 if self.required is True:
@@ -56,18 +62,22 @@ class Nested(Field):
     """ Another field """
     def __init__(self, schema, **kwargs):
         self._schema = schema
+        self._kwargs = kwargs
         super(Nested, self).__init__(**kwargs)
+
+    def _init(self):
+        if self._schema == 'self':
+            self._schema = self.parent.__class__(**self._kwargs)
 
     def _func(self, value):
         return self._schema.validate(value)
 
 
-class List(Field):
-    """ List of fields """
+class List(Nested):
+    """ List of another fields """
     def __init__(self, schema, allow_empty=True, **kwargs):
-        self._schema = schema
         self.allow_empty = allow_empty
-        super(List, self).__init__(**kwargs)
+        super(List, self).__init__(schema, **kwargs)
 
     def _func(self, value):
         result = [self._schema.validate(member)
