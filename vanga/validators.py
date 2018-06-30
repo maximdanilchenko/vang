@@ -1,3 +1,4 @@
+from typing import Optional, Iterable, Any
 import re
 
 from vanga.exceptions import VangaError
@@ -6,7 +7,7 @@ from vanga.exceptions import VangaError
 class Range:
     """ Is >= min and <= max """
 
-    def __init__(self, min=None, max=None):
+    def __init__(self, min: Optional[int] = None, max: Optional[int] = None):
         self.min = min
         self.max = max
 
@@ -20,7 +21,7 @@ class Range:
 class Length:
     """ Length is >= min and <= max """
 
-    def __init__(self, min=None, max=None):
+    def __init__(self, min: Optional[int] = None, max: Optional[int] = None):
         self.min = min
         self.max = max
 
@@ -34,10 +35,10 @@ class Length:
 class OneOf:
     """ Is one of values """
 
-    def __init__(self, values=()):
+    def __init__(self, values: Iterable[Any] = ()):
         self.values = values
 
-    def __call__(self, value):
+    def __call__(self, value: Any):
         if value not in self.values:
             raise VangaError(f"Length should be one of {self.values}")
 
@@ -45,10 +46,10 @@ class OneOf:
 class NoneOf:
     """ Is none of values """
 
-    def __init__(self, values=()):
+    def __init__(self, values: Iterable[Any] = ()):
         self.values = values
 
-    def __call__(self, value):
+    def __call__(self, value: Any):
         if value in self.values:
             raise VangaError(f"Length should not be one of {self.values}")
 
@@ -56,10 +57,10 @@ class NoneOf:
 class Equal:
     """ Is equal to value """
 
-    def __init__(self, value):
+    def __init__(self, value: Any):
         self.value = value
 
-    def __call__(self, value):
+    def __call__(self, value: Any):
         if value != self.value:
             raise VangaError(f"Should be equal to {self.value}")
 
@@ -67,9 +68,9 @@ class Equal:
 class Regexp:
     """ Is match to regex """
 
-    def __init__(self, regexp):
+    def __init__(self, regexp: str):
         self.regexp = re.compile(regexp)
 
-    def __call__(self, value):
+    def __call__(self, value: str):
         if self.regexp.match(value) is None:
             raise VangaError(f"Should match to '{self.regexp}' regexp")

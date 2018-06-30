@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from vanga.abc import FieldABC
 from vanga.extras import empty
 
@@ -11,7 +13,7 @@ class SchemaMeta(type):
 
 
 class Schema(metaclass=SchemaMeta):
-    def __init__(self, *, exclude=(), only=(), **_):
+    def __init__(self, *, exclude: Iterable[str] = (), only: Iterable[str] = (), **_):
         only = set(only or self._fields.keys())
         self._fields = {
             k: prepare_field(v, self)
@@ -19,7 +21,7 @@ class Schema(metaclass=SchemaMeta):
             if k not in exclude and k in only
         }
 
-    def validate(self, data):
+    def validate(self, data: dict):
         result = {}
         for k, v in self._fields.items():
             value = v.validate(k, data)
@@ -28,7 +30,7 @@ class Schema(metaclass=SchemaMeta):
         return result
 
 
-def prepare_field(child, parent):
+def prepare_field(child: FieldABC, parent: Schema):
     child.parent = parent
-    child._init()
+    child.init()
     return child
