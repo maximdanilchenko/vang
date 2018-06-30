@@ -42,12 +42,15 @@ class Field(FieldABC):
             for validator in self.validators:
                 validator(value)
             return value
-        except (ValueError, TypeError, VangaError):
-            raise VangaError(f"Incorrect format for '{key}' value")
+        except (ValueError, TypeError):
+            raise VangaError(f"Incorrect format", key)
+        except VangaError as ve:
+            ve.key = f".{key}{ve.key}" if ve.key else f".{key}"
+            raise ve
         except KeyError:
             if self.default is empty:
                 if self.required is True:
-                    raise VangaError(f"Missing '{key}' value")
+                    raise VangaError(f"Missing key", f".{key}")
                 return empty
             return self.default
 
@@ -100,7 +103,14 @@ class List(Nested):
         super().__init__(schema, **kwargs)
 
     def _func(self, value: Iterable[Any]):
-        result = [self._schema.validate(member) for member in value]
+        # result = [self._schema.validate(member) for member in value]
+        result = []
+        for idx, member in enumerate(value):
+            try:
+                result.append(self._schema.validate(member))
+            except VangaError as ve:
+                ve.key = f"[{idx}]{ve.key}" if ve.key else f"[{idx}]"
+                raise ve
         if not result and not self.allow_empty:
             raise VangaError("Should not be empty")
         return result
