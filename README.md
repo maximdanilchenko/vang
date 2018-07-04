@@ -33,11 +33,10 @@ Its aims are __simplicity__ and __speed__.
   - [x] ```Raw``` class.
   - [ ] ```Datetime```/```Date```/```Time``` classes;
   - [ ] ```Decimal``` class;
-- [ ] Fields params:
+- [x] Fields params:
   - [x] ```default``` param;
   - [x] ```required``` param;
   - [x] ```allow_none``` param;
-  - [ ] ```error_msg``` param;
   - [x] ```validators``` param;
 - [ ] Decorators:
   - [ ] ```before_validation``` decorator;
@@ -49,6 +48,7 @@ Its aims are __simplicity__ and __speed__.
   - [x] ```NoneOf``` function;
   - [x] ```Equal``` function;
   - [x] ```Regexp``` function.
+  - [ ] ```error_msg``` param;
 - [ ] Flexible errors configuration:
   - [x] Dynamic error building with all exceptions;
   - [ ] Validation level param - validate while first exception raises, while all and so on; 
