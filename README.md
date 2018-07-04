@@ -1,12 +1,12 @@
-# Vanga
+# Vang
 
 ![Status: developing](https://img.shields.io/badge/status-developing-red.svg) 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-Vanga (from "vanguard") - is validating library. 
+Vang (from "vanguard") - is validating library. 
 Its API is very like ```marshmallow```'s, 
 because ```marshmallow``` is awesome and many are familiar with it, 
-so it will be easier to start with ```vanga``` for newcomers. 
+so it will be easier to start with ```vang``` for newcomers. 
 Its aims are __simplicity__ and __speed__.
 
 ### To be short its main features are/will be:
@@ -38,8 +38,7 @@ Its aims are __simplicity__ and __speed__.
   - [x] ```required``` param;
   - [x] ```allow_none``` param;
   - [ ] ```error_msg``` param;
-  - [ ] ```validators``` param;
-  - [ ] ```before_validation```/```after_validation``` params.
+  - [x] ```validators``` param;
 - [ ] Decorators:
   - [ ] ```before_validation``` decorator;
   - [ ] ```after_validation``` decorator.
@@ -51,6 +50,8 @@ Its aims are __simplicity__ and __speed__.
   - [x] ```Equal``` function;
   - [x] ```Regexp``` function.
 - [ ] Flexible errors configuration:
+  - [x] Dynamic error building with all exceptions;
+  - [ ] Validation level param - validate while first exception raises, while all and so on; 
   - [ ] Configuring error messages for each validate class/function;
   - [ ] Custom exceptions support.
 - [ ] Annotation types support:
@@ -67,7 +68,7 @@ method with cython if needed and where needed.
 ```python
 import pprint
 
-from vanga import fields, Schema, validators
+from vang import fields, Schema, validators
 
 
 class Address(Schema):

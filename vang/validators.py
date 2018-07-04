@@ -1,7 +1,7 @@
 from typing import Optional, Iterable, Any
 import re
 
-from vanga.exceptions import VangaError
+from vang.exceptions import VangError
 
 
 class Range:
@@ -13,9 +13,9 @@ class Range:
 
     def __call__(self, value):
         if self.min is not None and value < self.min:
-            raise VangaError(f"Should be >= {self.min}")
+            raise VangError(f"Should be >= {self.min}")
         if self.max is not None and value > self.max:
-            raise VangaError(f"Should be <= {self.max}")
+            raise VangError(f"Should be <= {self.max}")
 
 
 class Length:
@@ -27,9 +27,9 @@ class Length:
 
     def __call__(self, value):
         if self.min is not None and len(value) < self.min:
-            raise VangaError(f"Length should be >= {self.min}")
+            raise VangError(f"Length should be >= {self.min}")
         if self.max is not None and len(value) > self.max:
-            raise VangaError(f"Length should be <= {self.max}")
+            raise VangError(f"Length should be <= {self.max}")
 
 
 class OneOf:
@@ -40,7 +40,7 @@ class OneOf:
 
     def __call__(self, value: Any):
         if value not in self.values:
-            raise VangaError(f"Length should be one of {self.values}")
+            raise VangError(f"Length should be one of {self.values}")
 
 
 class NoneOf:
@@ -51,7 +51,7 @@ class NoneOf:
 
     def __call__(self, value: Any):
         if value in self.values:
-            raise VangaError(f"Length should not be one of {self.values}")
+            raise VangError(f"Length should not be one of {self.values}")
 
 
 class Equal:
@@ -62,7 +62,7 @@ class Equal:
 
     def __call__(self, value: Any):
         if value != self.value:
-            raise VangaError(f"Should be equal to {self.value}")
+            raise VangError(f"Should be equal to {self.value}")
 
 
 class Regexp:
@@ -73,4 +73,4 @@ class Regexp:
 
     def __call__(self, value: str):
         if self.regexp.match(value) is None:
-            raise VangaError(f"Should match to '{self.regexp}' regexp")
+            raise VangError(f"Should match to '{self.regexp}' regexp")

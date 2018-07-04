@@ -1,7 +1,8 @@
 from typing import Iterable
 
-from vanga.abc import FieldABC
-from vanga.extras import empty
+from vang.abc import FieldABC
+from vang.extras import empty
+from vang.exceptions import VangError
 
 
 class SchemaMeta(type):
@@ -22,11 +23,22 @@ class Schema(metaclass=SchemaMeta):
         }
 
     def validate(self, data: dict):
+        error = None
         result = {}
         for k, v in self._fields.items():
-            value = v.validate(k, data)
-            if value is not empty:
-                result[k] = v.validate(k, data)
+            try:
+                value = v.validate(k, data)
+            except VangError as ve:
+                if error is None:
+                    error = VangError(key=self.__class__.__name__)
+                error.msg[ve.key] = ve.msg
+            else:
+                if error is None and value is not empty:
+                    result[k] = v.validate(k, data)
+        if error:
+            if len(error.msg) == 1:
+                raise VangError(*list(error.msg.items())[0][::-1])
+            raise VangError(error.msg, error.key)
         return result
 
 
