@@ -8,7 +8,8 @@ from vang.exceptions import VangError
 class SchemaMeta(type):
     def __new__(mcs, name, bases, attrs):
         instance = super(SchemaMeta, mcs).__new__(mcs, name, bases, attrs)
-        instance._fields = {k: v for k, v in attrs.items() if isinstance(v, FieldABC)}
+        instance._fields = {**{k: v for k, v in attrs.items() if isinstance(v, FieldABC)},
+                            **attrs.get('__annotations__', {})}
         return instance
 
 
