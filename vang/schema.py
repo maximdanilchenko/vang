@@ -1,7 +1,7 @@
 from typing import Iterable
 
 from vang.abc import FieldABC
-from vang.extras import empty
+from vang.extras import empty, Levels
 from vang.exceptions import VangError
 
 
@@ -9,18 +9,25 @@ class SchemaMeta(type):
     def __new__(mcs, name, bases, attrs):
         instance = super(SchemaMeta, mcs).__new__(mcs, name, bases, attrs)
         instance._fields = {k: v for k, v in attrs.items() if isinstance(v, FieldABC)}
-
         return instance
 
 
 class Schema(metaclass=SchemaMeta):
-    def __init__(self, *, exclude: Iterable[str] = (), only: Iterable[str] = (), **_):
+    def __init__(
+        self,
+        *,
+        exclude: Iterable[str] = (),
+        only: Iterable[str] = (),
+        level: Levels = Levels.MEDIUM,
+        **_
+    ):
         only = set(only or self._fields.keys())
         self._fields = {
             k: prepare_field(v, self)
             for k, v in self._fields.items()
             if k not in exclude and k in only
         }
+        self.level = level
 
     def validate(self, data: dict):
         error = None
@@ -29,15 +36,15 @@ class Schema(metaclass=SchemaMeta):
             try:
                 value = v.validate(k, data)
             except VangError as ve:
+                if self.level == Levels.LOW:
+                    raise VangError(msg={ve.key: ve.msg})
                 if error is None:
-                    error = VangError(key=self.__class__.__name__)
+                    error = VangError()
                 error.msg[ve.key] = ve.msg
             else:
                 if error is None and value is not empty:
                     result[k] = v.validate(k, data)
         if error:
-            if len(error.msg) == 1:
-                raise VangError(*list(error.msg.items())[0][::-1])
             raise VangError(error.msg, error.key)
         return result
 

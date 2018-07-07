@@ -40,7 +40,7 @@ class OneOf:
 
     def __call__(self, value: Any):
         if value not in self.values:
-            raise VangError(f"Length should be one of {self.values}")
+            raise VangError(f"Should be one of {self.values}")
 
 
 class NoneOf:
@@ -51,7 +51,7 @@ class NoneOf:
 
     def __call__(self, value: Any):
         if value in self.values:
-            raise VangError(f"Length should not be one of {self.values}")
+            raise VangError(f"Should not be one of {self.values}")
 
 
 class Equal:

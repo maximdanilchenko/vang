@@ -2,7 +2,7 @@ from typing import Any, Iterable, Callable
 
 from vang.abc import FieldABC
 from vang.exceptions import VangError
-from vang.extras import empty
+from vang.extras import empty, Levels
 
 
 SELF_NESTED = "self"
@@ -47,7 +47,7 @@ class Field(FieldABC):
         except VangError as ve:
             if ve.key:
                 ve.msg = {ve.key: ve.msg}
-                ve.key = key
+            ve.key = key
             raise ve
         except KeyError:
             if self.default is empty:
@@ -106,14 +106,17 @@ class List(Nested):
 
     def _func(self, value: Iterable[Any]):
         result = []
+        errors = {}
         for idx, member in enumerate(value):
             try:
                 result.append(self._schema.validate(member))
             except VangError as ve:
-                if ve.key:
-                    ve.msg = {ve.key: ve.msg}
-                ve.key = idx
-                raise ve
+                if self.parent.level != Levels.HIGH:
+                    ve.msg = {idx: ve.msg}
+                    raise ve
+                errors[idx] = ve.msg
+        if errors:
+            raise VangError(msg=errors)
         if not result and not self.allow_empty:
             raise VangError("Should not be empty")
         return result

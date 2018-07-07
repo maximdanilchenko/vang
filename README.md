@@ -48,10 +48,9 @@ Its aims are __simplicity__ and __speed__.
   - [x] ```NoneOf``` function;
   - [x] ```Equal``` function;
   - [x] ```Regexp``` function.
-  - [ ] ```error_msg``` param;
 - [ ] Flexible errors configuration:
   - [x] Dynamic error building with all exceptions;
-  - [ ] Validation level param - validate while first exception raises, while all and so on; 
+  - [x] Validation level param - validate while first exception raises, while all and so on; 
   - [ ] Configuring error messages for each validate class/function;
   - [ ] Custom exceptions support.
 - [ ] Annotation types support:
@@ -66,9 +65,9 @@ method with cython if needed and where needed.
 
 ### Usage example:
 ```python
-import pprint
+from pprint import pprint
 
-from vang import fields, Schema, validators
+from vang import fields, Schema, validators, VangError, Levels
 
 
 class Address(Schema):
@@ -92,28 +91,28 @@ class User(Schema):
     friends = fields.List("self", only=("name",))
 
 
-user_schema = User()
-validated = user_schema.validate(
-    {
-        "name": "Bob",
-        "age": None,
-        "cars": [
-            {"name": "Ford Focus", "new": True},
-            {"name": "Toyota Supra", "number": 432},
-        ],
-        "address": {"street": "High", "house": 43},
-        "brother": {"name": "Alex", "age": 24},
-        "friends": [{"name": "Max"}, {"name": "David"}],
-    }
-)
-pprint.pprint(validated)
-"""Output:
-{'address': {'city': 'New York', 'house': 43, 'street': 'High'},
- 'age': None,
- 'brother': {'age': 24, 'name': 'Alex'},
- 'cars': [{'name': 'Ford Focus', 'new': True, 'number': None},
-          {'name': 'Toyota Supra', 'number': 432}],
- 'friends': [{'name': 'Max'}, {'name': 'David'}],
- 'name': 'Bob'}
-"""
+user_schema = User(level=Levels.HIGH)
+try:
+    validated = user_schema.validate(
+        {
+            "name": "Bob",
+            "age": None,
+            "cars": [
+                {"name": "Ford Focus", "new": True, "number": 123456},
+                {"name": "Toyota Supra", "number": 4382},
+            ],
+            "address": {"street": "High", "house": "not num"},
+            "brother": {"name": "Alex", "age": "ten"},
+            "friends": [{"name": "Max"}, {"name": "David"}],
+        }
+    )
+except VangError as ve:
+    pprint(ve.msg)
 ```
+Output:
+```python
+{'address': {'house': 'Incorrect format'},
+ 'brother': {'age': 'Incorrect format'},
+ 'cars': {0: {'number': 'Should be <= 999'}, 1: {'number': 'Should be <= 999'}}}
+```
+
