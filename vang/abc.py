@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class FieldABC(ABC):
     def __init__(self):
-        self.parent = None
+        self._parent = None
 
     @abstractmethod
     def validate(self, key: str, data: dict):

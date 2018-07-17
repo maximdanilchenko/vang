@@ -91,7 +91,8 @@ class Nested(Field):
 
     def init(self):
         if self._schema == SELF_NESTED:
-            self._schema = self.parent.__class__(**self._kwargs)
+            self._schema = self._parent.__class__(**self._kwargs)
+        self._schema._parent = self._parent
 
     def _func(self, value: Any):
         return self._schema.validate(value)
@@ -111,7 +112,7 @@ class List(Nested):
             try:
                 result.append(self._schema.validate(member))
             except VangError as ve:
-                if self.parent.level != Levels.HIGH:
+                if self._parent.level != Levels.HIGH:
                     ve.msg = {idx: ve.msg}
                     raise ve
                 errors[idx] = ve.msg

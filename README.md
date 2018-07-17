@@ -38,9 +38,10 @@ Its aims are __simplicity__ and __speed__.
   - [x] ```required``` param;
   - [x] ```allow_none``` param;
   - [x] ```validators``` param;
-- [ ] Decorators:
-  - [ ] ```before_validation``` decorator;
-  - [ ] ```after_validation``` decorator.
+- [x] Decorators:
+  - [x] ```before_validation``` decorator;
+  - [x] ```after_validation``` decorator;
+  - [x] Optional ```order``` param to execute funcs before or after validation in given order.
 - [x] Standard validation functions:
   - [x] ```Range``` function;
   - [x] ```Length``` function;
