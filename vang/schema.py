@@ -3,6 +3,7 @@ from typing import Iterable
 from vang.abc import FieldABC
 from vang.extras import empty, Levels
 from vang.exceptions import VangError
+from vang.typing_mapping import types_to_fields
 
 
 class SchemaMeta(type):
@@ -11,7 +12,7 @@ class SchemaMeta(type):
         instance._parent = None
         instance._fields = {
             **{k: v for k, v in attrs.items() if isinstance(v, FieldABC)},
-            **attrs.get('__annotations__', {}),
+            **types_to_fields(attrs.get('__annotations__', {})),
         }
         instance._before = [
             item.__name__

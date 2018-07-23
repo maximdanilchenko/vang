@@ -81,36 +81,67 @@ class Boolean(Field):
     _func = bool
 
 
-class Nested(Field):
-    """ Another field """
+class Dict(Field):
+    """ Dict field """
 
-    def __init__(self, schema, **kwargs):
-        self._schema = schema
+    def __init__(self, key_schema_or_field=None, value_schema_or_field=None, **kwargs):
+        self._key_schema = key_schema_or_field or Raw()
+        self._value_schema = value_schema_or_field or Raw()
         self._kwargs = kwargs
         super().__init__(**kwargs)
 
     def init(self):
+        self._key_schema._parent = self._parent
+        self._value_schema._parent = self._parent
+
+    def _func(self, value: dict):
+        return {
+            self._key_schema._func(key)
+            if isinstance(self._key_schema, Field)
+            else self._key_schema.validate(key): self._value_schema._func(value)
+            if isinstance(self._key_schema, Field)
+            else self._value_schema.validate(value)
+            for key, value in value.items()
+        }
+
+
+class Nested(Field):
+    """ Another field """
+
+    def __init__(self, schema_or_field, **kwargs):
+        self._schema = schema_or_field
+        self._kwargs = kwargs
+        super().__init__(**kwargs)
+
+    def init(self):
+        if isinstance(self._schema, Field):
+            return None
         if self._schema == SELF_NESTED:
             self._schema = self._parent.__class__(**self._kwargs)
         self._schema._parent = self._parent
 
     def _func(self, value: Any):
+        if isinstance(self._schema, Field):
+            return self._schema._func(value)
         return self._schema.validate(value)
 
 
 class List(Nested):
-    """ List of another fields """
+    """ List of another fields or Schemas"""
 
-    def __init__(self, schema, allow_empty: bool = True, **kwargs):
+    def __init__(self, schema_or_field, allow_empty: bool = True, **kwargs):
         self.allow_empty = allow_empty
-        super().__init__(schema, **kwargs)
+        super().__init__(schema_or_field, **kwargs)
 
     def _func(self, value: Iterable[Any]):
         result = []
         errors = {}
         for idx, member in enumerate(value):
             try:
-                result.append(self._schema.validate(member))
+                if isinstance(self._schema, Field):
+                    result.append(self._schema._func(member))
+                else:
+                    result.append(self._schema.validate(member))
             except VangError as ve:
                 if self._parent.level != Levels.HIGH:
                     ve.msg = {idx: ve.msg}
@@ -125,3 +156,19 @@ class List(Nested):
 
 class Raw(Field):
     """ Any object """
+
+
+class Date(Field):
+    """ TODO: Date field """
+
+
+class Time(Field):
+    """ TODO: Time field """
+
+
+class DateTime(Field):
+    """ TODO: DateTime field """
+
+
+class Decimal(Field):
+    """ TODO: Decimal field """
